@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MT EXAM - ระบบรวบรวมข้อสอบเทคนิคการแพทย์</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      footer p:last-child { display: none !important; }
+    </style>
+    <script>
+      (function() {
+        const originalFetch = window.fetch;
+        window.fetch = async function(...args) {
+          const url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url ? args[0].url : '');
+          const isAuthAction = url.includes('/api/auth/login') || url.includes('/api/auth/register');
+          if (isAuthAction) {
+            window.__mt_login_in_progress = Date.now();
+          }
+          const response = await originalFetch.apply(this, args);
+          try {
+            if (isAuthAction) {
+              const clone = response.clone();
+              clone.json().then(data => {
+                if (data && data.user && data.user.username) {
+                  localStorage.setItem('mt_exam_active_username', data.user.username);
+                  if (data.sessionId) {
+                    localStorage.setItem('mt_exam_sessionId', data.sessionId);
+                    localStorage.setItem('mt_exam_active_session_id', data.sessionId);
+                  }
+                }
+                setTimeout(() => {
+                  window.__mt_login_in_progress = 0;
+                }, 1500);
+              }).catch(() => {
+                window.__mt_login_in_progress = 0;
+              });
+            } else if (url.includes('/api/auth/logout')) {
+              localStorage.removeItem('mt_exam_active_username');
+              localStorage.removeItem('mt_exam_active_session_id');
+              localStorage.removeItem('mt_exam_sessionId');
+            } else if (url.includes('/api/auth/ping')) {
+              if (response.status === 401) {
+                const clone = response.clone();
+                clone.json().then(data => {
+                  if (data && data.forceLogout) {
+                    triggerForceLogoutUI(data.error || 'บัญชีนี้มีการเข้าสู่ระบบจากอุปกรณ์อื่น');
+                  }
+                }).catch(() => {});
+              }
+            }
+          } catch (e) {}
+          return response;
+        };
+
+        function setupEventStream() {
+          const eventSource = new EventSource('/api/events');
+          eventSource.addEventListener('force_logout', (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (!data) return;
+              if (window.__mt_login_in_progress && (Date.now() - window.__mt_login_in_progress < 15000)) {
+                return;
+              }
+              const currentSession = localStorage.getItem('mt_exam_sessionId') || localStorage.getItem('mt_exam_active_session_id');
+              const currentUser = localStorage.getItem('mt_exam_active_username');
+              if (!currentSession || !currentUser) return;
+              if (data.newSessionId && currentSession === data.newSessionId) return;
+              const isSameUser = currentUser && data.targetUser && currentUser.toLowerCase() === data.targetUser.toLowerCase();
+              const isExactOldSession = data.oldSessionId && currentSession === data.oldSessionId;
+              if (isSameUser && isExactOldSession) {
+                triggerForceLogoutUI(data.reason || 'บัญชีของคุณได้รับการเข้าสู่ระบบจากอุปกรณ์หรือเบราว์เซอร์อื่น');
+              }
+            } catch (err) {}
+          });
+          eventSource.onerror = function() {
+            setTimeout(setupEventStream, 5000);
+          };
+        }
+        setupEventStream();
+
+        function triggerForceLogoutUI(message) {
+          if (window.__mt_forced_logout_shown) return;
+          window.__mt_forced_logout_shown = true;
+          localStorage.removeItem('mt_exam_sessionId');
+          localStorage.removeItem('mt_exam_active_session_id');
+          localStorage.removeItem('mt_exam_active_username');
+
+          const modal = document.createElement('div');
+          modal.id = 'mt-force-logout-overlay';
+          modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:9999999;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"Prompt",sans-serif;';
+          modal.innerHTML = `
+            <div style="background:#1c1917;border:1px solid rgba(245,158,11,0.4);border-radius:24px;padding:28px 24px;max-width:440px;width:100%;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);color:#f5f5f4;">
+              <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:50%;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;">
+                <svg style="width:32px;height:32px;color:#fbbf24;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              </div>
+              <h3 style="font-size:1.25rem;font-weight:700;color:#fbbf24;margin-bottom:8px;">แจ้งเตือนการเข้าสู่ระบบซ้ำ</h3>
+              <p style="font-size:0.875rem;color:#d6d3d1;line-height:1.6;margin-bottom:24px;">${message}</p>
+              <button id="mt-force-logout-btn" style="width:100%;background:#e11d48;color:#ffffff;font-weight:700;font-size:0.875rem;padding:12px 20px;border-radius:12px;border:none;cursor:pointer;">รับทราบและออกจากระบบ</button>
+            </div>
+          `;
+          document.body.appendChild(modal);
+          document.getElementById('mt-force-logout-btn').onclick = () => window.location.reload();
+          setTimeout(() => window.location.reload(), 8000);
+        }
+      })();
+    </script>
+    <script>
+      window.openFAQModal = async function() {
+        let existing = document.getElementById('mt-faq-modal');
+        if (existing) existing.remove();
+
+        let faqs = [];
+        try {
+          const res = await fetch('/api/faqs');
+          faqs = await res.json();
+        } catch (e) {
+          faqs = [];
+        }
+
+        const modal = document.createElement('div');
+        modal.id = 'mt-faq-modal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"Prompt",sans-serif;';
+        
+        let faqListHtml = faqs.map((f, idx) => `
+          <div style="background:#292524;border:1px solid #44403c;border-radius:16px;padding:16px;margin-bottom:12px;text-align:left;">
+            <div style="font-weight:600;color:#fbbf24;font-size:0.95rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+              <span style="background:rgba(251,191,36,0.15);color:#fbbf24;padding:2px 8px;border-radius:6px;font-size:0.75rem;">Q${idx+1}</span>
+              ${f.question}
+            </div>
+            <div style="color:#d6d3d1;font-size:0.875rem;line-height:1.6;padding-left:26px;">
+              ${f.answer}
+            </div>
+          </div>
+        `).join('');
+
+        if (faqs.length === 0) {
+          faqListHtml = '<div style="text-align:center;color:#a8a29e;padding:24px;">ยังไม่มีคำถามที่พบบ่อยในขณะนี้</div>';
+        }
+
+        modal.innerHTML = `
+          <div style="background:#1c1917;border:1px solid #44403c;border-radius:24px;padding:24px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);color:#f5f5f4;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #292524;padding-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;color:#fbbf24;">
+                  <svg style="width:20px;height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 style="font-size:1.25rem;font-weight:700;color:#f5f5f4;margin:0;">คำถามที่พบบ่อย (FAQ)</h2>
+              </div>
+              <button id="mt-faq-close-btn" style="background:#292524;border:none;color:#a8a29e;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+            <div style="margin-bottom:20px;">
+              ${faqListHtml}
+            </div>
+            <button id="mt-faq-close-btn-2" style="width:100%;background:#44403c;color:#f5f5f4;font-weight:600;padding:12px;border-radius:12px;border:none;cursor:pointer;">ปิดหน้าต่าง</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        document.getElementById('mt-faq-close-btn').onclick = () => modal.remove();
+        document.getElementById('mt-faq-close-btn-2').onclick = () => modal.remove();
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+      };
+
+      // Global functions for Admin FAQ list rendering and deletion (no closure bugs / iframe safe)
+      window.showFaqNotification = function(message, type = 'success') {
+        const oldNotif = document.getElementById('faq-toast-notif');
+        if (oldNotif) oldNotif.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'faq-toast-notif';
+        toast.style.cssText = `
+          position: fixed;
+          top: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: ${type === 'success' ? '#10b981' : '#ef4444'};
+          color: white;
+          padding: 12px 24px;
+          border-radius: 12px;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+          z-index: 99999999;
+          font-weight: 600;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+          pointer-events: none;
+          text-align: center;
+          font-family: 'Prompt', sans-serif;
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => { toast.remove(); }, 300);
+        }, 3000);
+      };
+
+      window.renderAdminFAQList = function(faqs) {
+        const container = document.getElementById('admin-faq-list-container');
+        if (!container) return;
+        if (!faqs || faqs.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#a8a29e;padding:24px;">ยังไม่มีคำถามที่พบบ่อยในขณะนี้</div>';
+        } else {
+          container.innerHTML = faqs.map(f => `
+            <div style="background:#292524;border:1px solid #44403c;border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;text-align:left;">
+              <div style="flex:1;">
+                <div style="font-weight:600;color:#fbbf24;font-size:0.9rem;margin-bottom:4px;">${f.question}</div>
+                <div style="color:#d6d3d1;font-size:0.85rem;line-height:1.5;margin-bottom:6px;">${f.answer}</div>
+                <div style="font-size:0.7rem;color:#78716c;">เพิ่มโดย: ${f.createdBy || 'Admin'}</div>
+              </div>
+              <div id="faq-action-${f.id}" style="display:flex;align-items:center;gap:6px;">
+                <button onclick="window.askDeleteFAQ('${f.id}')" style="background:rgba(225,29,72,0.15);border:1px solid rgba(225,29,72,0.4);color:#f43f5e;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;white-space:nowrap;">🗑️ ลบ</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      };
+
+      window.askDeleteFAQ = function(id) {
+        const actionContainer = document.getElementById(`faq-action-${id}`);
+        if (!actionContainer) return;
+        actionContainer.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;background:#1c1917;padding:6px;border-radius:8px;border:1px solid #dc2626;">
+            <span style="font-size:0.75rem;color:#f43f5e;font-weight:600;white-space:nowrap;">ยืนยันการลบ?</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="window.confirmDeleteFAQ('${id}')" style="background:#ef4444;color:white;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-weight:600;">ใช่, ลบเลย</button>
+              <button onclick="window.cancelDeleteFAQ('${id}')" style="background:#44403c;color:#f5f5f4;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:0.7rem;font-weight:600;">ไม่</button>
+            </div>
+          </div>
+        `;
+      };
+
+      window.cancelDeleteFAQ = function(id) {
+        const actionContainer = document.getElementById(`faq-action-${id}`);
+        if (!actionContainer) return;
+        actionContainer.innerHTML = `
+          <button onclick="window.askDeleteFAQ('${id}')" style="background:rgba(225,29,72,0.15);border:1px solid rgba(225,29,72,0.4);color:#f43f5e;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;white-space:nowrap;">🗑️ ลบ</button>
+        `;
+      };
+
+      window.confirmDeleteFAQ = async function(id) {
+        const adminUser = localStorage.getItem('mt_exam_active_username') || 'Admin';
+        const actionContainer = document.getElementById(`faq-action-${id}`);
+        if (actionContainer) {
+          actionContainer.innerHTML = '<span style="font-size:0.7rem;color:#a8a29e;">กำลังลบ...</span>';
+        }
+        try {
+          const res = await fetch('/api/faqs/' + encodeURIComponent(id) + '?adminUser=' + encodeURIComponent(adminUser), { method: 'DELETE' });
+          const data = await res.json();
+          if (data && data.success) {
+            window.showFaqNotification('ลบคำถามเรียบร้อยแล้ว');
+            window.renderAdminFAQList(data.faqs);
+          } else {
+            window.showFaqNotification('ไม่สามารถลบข้อมูลได้: ' + (data?.error || 'Unknown error'), 'error');
+            window.cancelDeleteFAQ(id);
+          }
+        } catch (e) {
+          window.showFaqNotification('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่อลบข้อมูล', 'error');
+          window.cancelDeleteFAQ(id);
+        }
+      };
+
+      // Inline React Component for Admin FAQ management
+      window.AdminFAQTab = function() {
+        const [faqs, setFaqs] = window.React.useState([]);
+        const [qInput, setQInput] = window.React.useState("");
+        const [aInput, setAInput] = window.React.useState("");
+        const [deletingId, setDeletingId] = window.React.useState(null);
+        const [loading, setLoading] = window.React.useState(false);
+        const [saving, setSaving] = window.React.useState(false);
+
+        const fetchFaqs = async () => {
+          setLoading(true);
+          try {
+            const res = await fetch("/api/faqs");
+            const data = await res.json();
+            setFaqs(data || []);
+          } catch (e) {
+            console.error(e);
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        window.React.useEffect(() => {
+          fetchFaqs();
+        }, []);
+
+        const handleSave = async () => {
+          if (!qInput.trim() || !aInput.trim()) {
+            window.showFaqNotification("กรุณากรอกคำถามและคำตอบให้ครบถ้วน", "error");
+            return;
+          }
+          setSaving(true);
+          const adminUser = localStorage.getItem("mt_exam_active_username") || "Admin";
+          try {
+            const res = await fetch("/api/faqs", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ question: qInput.trim(), answer: aInput.trim(), adminUser })
+            });
+            const data = await res.json();
+            if (data.success) {
+              window.showFaqNotification("เพิ่มคำถามเรียบร้อยแล้ว");
+              setQInput("");
+              setAInput("");
+              setFaqs(data.faqs || []);
+            }
+          } catch (e) {
+            window.showFaqNotification("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error");
+          } finally {
+            setSaving(false);
+          }
+        };
+
+        const handleDelete = async (id) => {
+          const adminUser = localStorage.getItem("mt_exam_active_username") || "Admin";
+          try {
+            const res = await fetch("/api/faqs/" + encodeURIComponent(id) + "?adminUser=" + encodeURIComponent(adminUser), { method: "DELETE" });
+            const data = await res.json();
+            if (data && data.success) {
+              window.showFaqNotification("ลบคำถามเรียบร้อยแล้ว");
+              setFaqs(data.faqs || []);
+            } else {
+              window.showFaqNotification("ไม่สามารถลบข้อมูลได้", "error");
+            }
+          } catch (e) {
+            window.showFaqNotification("เกิดข้อผิดพลาดในการลบข้อมูล", "error");
+          } finally {
+            setDeletingId(null);
+          }
+        };
+
+        return window.React.createElement("div", { className: "space-y-6 w-full flex flex-col min-w-0" },
+          window.React.createElement("div", { className: "bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-xl space-y-6 w-full min-w-0" },
+            window.React.createElement("div", { className: "flex items-center gap-3 border-b border-stone-800 pb-4" },
+              window.React.createElement("div", { className: "w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 text-amber-400 font-bold text-lg" }, "❓"),
+              window.React.createElement("div", { className: "text-left" },
+                window.React.createElement("h3", { className: "text-base font-bold text-white" }, "จัดการคำถามที่พบบ่อย (FAQ)"),
+                window.React.createElement("p", { className: "text-stone-400 text-xs mt-0.5" }, "เพิ่ม ลบ หรือปรับปรุงรายการคำถามสำหรับผู้ใช้งานทั่วไป")
+              )
+            ),
+            
+            // Input form card
+            window.React.createElement("div", { className: "bg-stone-950 border border-stone-800 rounded-xl p-5 space-y-4 text-left" },
+              window.React.createElement("h4", { className: "text-xs font-bold text-amber-400 flex items-center gap-1.5" }, "➕ เพิ่มคำถามใหม่"),
+              window.React.createElement("div", { className: "space-y-1.5" },
+                window.React.createElement("label", { className: "text-xs font-semibold text-stone-300" }, "หัวข้อคำถาม:"),
+                window.React.createElement("input", {
+                  type: "text",
+                  value: qInput,
+                  onChange: (e) => setQInput(e.target.value),
+                  placeholder: "เช่น วิธีการใช้งานระบบสอบ...",
+                  className: "w-full p-2.5 bg-stone-900 border border-stone-800 rounded-xl text-xs text-stone-100 placeholder-stone-600 focus:outline-none focus:border-amber-500/50"
+                })
+              ),
+              window.React.createElement("div", { className: "space-y-1.5" },
+                window.React.createElement("label", { className: "text-xs font-semibold text-stone-300" }, "คำตอบ / รายละเอียด:"),
+                window.React.createElement("textarea", {
+                  value: aInput,
+                  onChange: (e) => setAInput(e.target.value),
+                  placeholder: "ระบุรายละเอียดคำตอบ...",
+                  rows: 3,
+                  className: "w-full p-2.5 bg-stone-900 border border-stone-800 rounded-xl text-xs text-stone-100 placeholder-stone-600 focus:outline-none focus:border-amber-500/50 resize-y"
+                })
+              ),
+              window.React.createElement("div", { className: "flex gap-2 pt-1" },
+                window.React.createElement("button", {
+                  onClick: handleSave,
+                  disabled: saving,
+                  className: "px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-xl text-xs cursor-pointer transition-colors"
+                }, saving ? "กำลังบันทึก..." : "💾 บันทึกคำถาม"),
+                window.React.createElement("button", {
+                  onClick: () => { setQInput(""); setAInput(""); },
+                  className: "px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs cursor-pointer transition-colors"
+                }, "ล้างค่า")
+              )
+            ),
+
+            // List card
+            window.React.createElement("div", { className: "space-y-4 text-left" },
+              window.React.createElement("h4", { className: "text-xs font-bold text-stone-300" }, "📋 รายการคำถามทั้งหมดที่มีในระบบ"),
+              loading ? window.React.createElement("div", { className: "text-center text-xs text-stone-500 py-6" }, "กำลังโหลดข้อมูล...") :
+              faqs.length === 0 ? window.React.createElement("div", { className: "text-center text-xs text-stone-500 py-6 border border-dashed border-stone-800 rounded-xl" }, "ยังไม่มีคำถามที่พบบ่อยในขณะนี้") :
+              window.React.createElement("div", { className: "space-y-3" },
+                faqs.map((f, f_idx) =>
+                  window.React.createElement("div", { key: f.id || ("faq_" + f_idx), className: "bg-stone-950 border border-stone-800/60 rounded-xl p-4 flex justify-between items-start gap-4" },
+                    window.React.createElement("div", { className: "flex-1" },
+                      window.React.createElement("div", { className: "text-xs font-bold text-amber-400 mb-1" }, f.question),
+                      window.React.createElement("div", { className: "text-xs text-stone-300 leading-relaxed" }, f.answer),
+                      window.React.createElement("div", { className: "text-[10px] text-stone-600 mt-2" }, "เพิ่มโดย: " + (f.createdBy || "Admin"))
+                    ),
+                    window.React.createElement("div", { className: "shrink-0" },
+                      deletingId === f.id ?
+                        window.React.createElement("div", { className: "flex flex-col gap-1.5 items-end bg-stone-900 border border-rose-500/40 p-2 rounded-lg" },
+                          window.React.createElement("span", { className: "text-[10px] text-rose-400 font-bold" }, "ยืนยันลบ?"),
+                          window.React.createElement("div", { className: "flex gap-1.5" },
+                            window.React.createElement("button", {
+                              onClick: () => handleDelete(f.id),
+                              className: "px-2 py-1 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded text-[10px] cursor-pointer"
+                            }, "ใช่"),
+                            window.React.createElement("button", {
+                              onClick: () => setDeletingId(null),
+                              className: "px-2 py-1 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded text-[10px] cursor-pointer"
+                            }, "ไม่")
+                          )
+                        ) :
+                        window.React.createElement("button", {
+                          onClick: () => setDeletingId(f.id),
+                          className: "px-2.5 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-900/40 text-rose-400 rounded-lg text-[10.5px] font-bold cursor-pointer transition-colors"
+                        }, "🗑️ ลบ")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      window.openAdminFAQModal = async function() {
+        let existing = document.getElementById('mt-admin-faq-modal');
+        if (existing) existing.remove();
+
+        let faqs = [];
+        try {
+          const res = await fetch('/api/faqs');
+          faqs = await res.json();
+        } catch (e) {
+          faqs = [];
+        }
+
+        const modal = document.createElement('div');
+        modal.id = 'mt-admin-faq-modal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"Prompt",sans-serif;';
+        
+        modal.innerHTML = `
+          <div style="background:#1c1917;border:1px solid #44403c;border-radius:24px;padding:24px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);color:#f5f5f4;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;border-bottom:1px solid #292524;padding-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;color:#fbbf24;">
+                  ❓
+                </div>
+                <div>
+                  <h2 style="font-size:1.25rem;font-weight:700;color:#f5f5f4;margin:0;">จัดการคำถามที่พบบ่อย (Admin FAQ Management)</h2>
+                  <p style="font-size:0.85rem;color:#a8a29e;margin:0;">เพิ่มหรือลบคำถามที่พบบ่อยสำหรับผู้ใช้งานระบบ</p>
+                </div>
+              </div>
+              <button id="admin-faq-close-top" style="background:#292524;border:none;color:#a8a29e;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+
+            <div style="background:#292524;border:1px solid #44403c;border-radius:16px;padding:16px;margin-bottom:20px;text-align:left;">
+              <h3 style="font-size:0.95rem;font-weight:600;color:#fbbf24;margin-top:0;margin-bottom:10px;">➕ เพิ่มคำถามที่พบบ่อยใหม่</h3>
+              <div style="margin-bottom:10px;">
+                <label style="display:block;font-size:0.8rem;color:#d6d3d1;margin-bottom:4px;">หัวข้อคำถาม:</label>
+                <input type="text" id="admin-faq-q-input" placeholder="เช่น วิธีการใช้งานระบบสอบ..." style="width:100%;padding:10px 12px;background:#1c1917;border:1px solid #44403c;border-radius:8px;color:#f5f5f4;font-family:'Prompt',sans-serif;font-size:0.85rem;" />
+              </div>
+              <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:0.8rem;color:#d6d3d1;margin-bottom:4px;">คำตอบ / รายละเอียด:</label>
+                <textarea id="admin-faq-a-input" placeholder="ระบุรายละเอียดคำตอบ..." rows="2" style="width:100%;padding:10px 12px;background:#1c1917;border:1px solid #44403c;border-radius:8px;color:#f5f5f4;font-family:'Prompt',sans-serif;font-size:0.85rem;resize:vertical;"></textarea>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button id="admin-faq-add-btn" style="background:#059669;color:#fff;font-weight:600;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;">💾 บันทึกเพิ่มคำถาม</button>
+                <button id="admin-faq-clear-btn" style="background:#44403c;color:#f5f5f4;font-weight:600;padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;">ล้างค่า</button>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size:0.95rem;font-weight:600;color:#f5f5f4;margin-bottom:12px;text-align:left;">📋 รายการคำถามทั้งหมด</h3>
+              <div id="admin-faq-list-container" style="display:flex;flex-direction:column;gap:10px;">
+                <!-- Filled dynamically -->
+              </div>
+            </div>
+
+            <div style="margin-top:20px;">
+              <button id="admin-faq-close-bottom" style="width:100%;background:#44403c;color:#f5f5f4;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.9rem;">ปิดหน้าต่าง</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Fill list container initially
+        window.renderAdminFAQList(faqs);
+
+        document.getElementById('admin-faq-close-top').onclick = () => modal.remove();
+        document.getElementById('admin-faq-close-bottom').onclick = () => modal.remove();
+        modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+        document.getElementById('admin-faq-clear-btn').onclick = () => {
+          document.getElementById('admin-faq-q-input').value = '';
+          document.getElementById('admin-faq-a-input').value = '';
+        };
+
+        document.getElementById('admin-faq-add-btn').onclick = async () => {
+          const q = document.getElementById('admin-faq-q-input').value.trim();
+          const a = document.getElementById('admin-faq-a-input').value.trim();
+          if (!q || !a) {
+            window.showFaqNotification('กรุณากรอกคำถามและคำตอบให้ครบถ้วน', 'error');
+            return;
+          }
+          const adminUser = localStorage.getItem('mt_exam_active_username') || 'Admin';
+          try {
+            const res = await fetch('/api/faqs', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question: q, answer: a, adminUser })
+            });
+            const data = await res.json();
+            if (data.success) {
+              window.showFaqNotification('เพิ่มคำถามเรียบร้อยแล้ว');
+              document.getElementById('admin-faq-q-input').value = '';
+              document.getElementById('admin-faq-a-input').value = '';
+              window.renderAdminFAQList(data.faqs);
+            }
+          } catch (err) {
+            window.showFaqNotification('เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'error');
+          }
+        };
+      };
+
+      // Global function for Exam Upload Modal (Google Drive Upload)
+      window.openExamUploadModal = function() {
+        let existing = document.getElementById('mt-exam-upload-modal');
+        if (existing) existing.remove();
+
+        const activeUser = localStorage.getItem('mt_exam_active_username') || '';
+
+        const modal = document.createElement('div');
+        modal.id = 'mt-exam-upload-modal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:999999;display:flex;align-items:center;justify-content:center;padding:16px;font-family:"Prompt",sans-serif;';
+
+        modal.innerHTML = `
+          <div style="background:#1c1917;border:1px solid #059669;border-radius:24px;padding:24px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,0.9);color:#f5f5f4;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;border-bottom:1px solid #292524;padding-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:38px;height:38px;border-radius:12px;background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;color:#34d399;font-size:1.2rem;">
+                  📤
+                </div>
+                <div>
+                  <h2 style="font-size:1.15rem;font-weight:700;color:#f5f5f4;margin:0;">[อัพโหลดข้อสอบ]</h2>
+                  <p style="font-size:0.75rem;color:#a8a29e;margin:0;">ส่งไฟล์ข้อสอบไปยัง Google Drive ของระบบ</p>
+                </div>
+              </div>
+              <button id="mt-upload-close-top" style="background:#292524;border:none;color:#a8a29e;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+
+            <div id="mt-upload-alert" style="display:none;margin-bottom:16px;padding:12px 16px;border-radius:12px;font-size:0.85rem;font-weight:600;"></div>
+
+            <form id="mt-exam-upload-form" style="display:flex;flex-direction:column;gap:14px;text-align:left;">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#d6d3d1;margin-bottom:6px;">ชื่อผู้ส่ง (ระบุชื่อหรือฉายา):</label>
+                <input type="text" id="mt-upload-sender" value="${activeUser}" placeholder="เช่น พี่แอดมิน / นศ.ทนพ. หรือไม่ระบุชื่อ" style="width:100%;padding:10px 14px;background:#292524;border:1px solid #44403c;border-radius:10px;color:#f5f5f4;font-family:'Prompt',sans-serif;font-size:0.85rem;box-sizing:border-box;" />
+              </div>
+
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#d6d3d1;margin-bottom:6px;">เลือกไฟล์ข้อสอบ (PDF, Word, รูปภาพ, Zip): <span style="color:#ef4444;">*</span></label>
+                <input type="file" id="mt-upload-file" required accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif,.zip,.rar,.txt" style="width:100%;padding:10px;background:#292524;border:1px dashed #059669;border-radius:10px;color:#f5f5f4;font-family:'Prompt',sans-serif;font-size:0.8rem;box-sizing:border-box;cursor:pointer;" />
+                <div id="mt-upload-file-info" style="font-size:0.75rem;color:#34d399;margin-top:4px;display:none;"></div>
+              </div>
+
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:600;color:#d6d3d1;margin-bottom:6px;">หมายเหตุ / รายละเอียดข้อสอบเพิ่มเติม:</label>
+                <textarea id="mt-upload-note" rows="3" placeholder="เช่น ข้อสอบปี 2567 รายวิชาเคมีคลินิก พร้อมเฉลย..." style="width:100%;padding:10px 14px;background:#292524;border:1px solid #44403c;border-radius:10px;color:#f5f5f4;font-family:'Prompt',sans-serif;font-size:0.85rem;resize:vertical;box-sizing:border-box;"></textarea>
+              </div>
+
+              <div style="display:flex;gap:10px;margin-top:6px;">
+                <button type="submit" id="mt-upload-submit-btn" style="flex:1;background:#059669;color:#ffffff;font-weight:700;padding:12px 18px;border-radius:12px;border:none;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(5,150,105,0.4);transition:all 0.2s;">
+                  <span>📤 ส่งไฟล์ข้อสอบไปยัง Google Drive</span>
+                </button>
+              </div>
+            </form>
+
+            <div style="margin-top:16px;">
+              <button id="mt-upload-close-bottom" style="width:100%;background:#292524;color:#a8a29e;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.85rem;">ยกเลิก / ปิดหน้าต่าง</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const closeBtn = () => modal.remove();
+        document.getElementById('mt-upload-close-top').onclick = closeBtn;
+        document.getElementById('mt-upload-close-bottom').onclick = closeBtn;
+        modal.onclick = (e) => { if (e.target === modal) closeBtn(); };
+
+        const fileInput = document.getElementById('mt-upload-file');
+        const fileInfo = document.getElementById('mt-upload-file-info');
+        fileInput.onchange = () => {
+          if (fileInput.files && fileInput.files[0]) {
+            const f = fileInput.files[0];
+            const sizeMb = (f.size / (1024 * 1024)).toFixed(2);
+            fileInfo.style.display = 'block';
+            fileInfo.textContent = `📁 เลือกไฟล์: ${f.name} (${sizeMb} MB)`;
+          } else {
+            fileInfo.style.display = 'none';
+          }
+        };
+
+        const form = document.getElementById('mt-exam-upload-form');
+        const alertBox = document.getElementById('mt-upload-alert');
+        const submitBtn = document.getElementById('mt-upload-submit-btn');
+
+        form.onsubmit = async (e) => {
+          e.preventDefault();
+          if (!fileInput.files || !fileInput.files[0]) {
+            alertBox.style.display = 'block';
+            alertBox.style.background = 'rgba(239,68,68,0.2)';
+            alertBox.style.border = '1px solid #ef4444';
+            alertBox.style.color = '#fca5a5';
+            alertBox.textContent = 'กรุณาเลือกไฟล์ข้อสอบก่อนกดส่ง';
+            return;
+          }
+
+          const file = fileInput.files[0];
+          if (file.size > 25 * 1024 * 1024) {
+            alertBox.style.display = 'block';
+            alertBox.style.background = 'rgba(239,68,68,0.2)';
+            alertBox.style.border = '1px solid #ef4444';
+            alertBox.style.color = '#fca5a5';
+            alertBox.textContent = 'ขนาดไฟล์ใหญ่เกินไป (ไม่เกิน 25MB)';
+            return;
+          }
+
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.6';
+          submitBtn.innerHTML = '⏳ กำลังอัปโหลดไปยัง Google Drive...';
+
+          alertBox.style.display = 'block';
+          alertBox.style.background = 'rgba(59,130,246,0.2)';
+          alertBox.style.border = '1px solid #3b82f6';
+          alertBox.style.color = '#93c5fd';
+          alertBox.textContent = 'กำลังประมวลผลไฟล์และส่งไปยัง Google Drive กรุณารอสักครู่...';
+
+          try {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+              const fileDataBase64 = reader.result;
+              const senderName = document.getElementById('mt-upload-sender').value.trim();
+              const note = document.getElementById('mt-upload-note').value.trim();
+
+              const res = await fetch('/api/upload-exam', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  senderName,
+                  note,
+                  fileName: file.name,
+                  fileType: file.type,
+                  fileSize: file.size,
+                  fileDataBase64
+                })
+              });
+
+              const data = await res.json();
+              if (res.ok && data.success) {
+                alertBox.style.background = 'rgba(16,185,129,0.2)';
+                alertBox.style.border = '1px solid #10b981';
+                alertBox.style.color = '#6ee7b7';
+                alertBox.textContent = `✅ ${data.message || 'ส่งไฟล์ข้อสอบสำเร็จเรียบร้อยแล้ว!'}`;
+                submitBtn.style.display = 'none';
+
+                setTimeout(() => {
+                  modal.remove();
+                  window.showFaqNotification('ส่งไฟล์ข้อสอบสำเร็จ! ขอบคุณสำหรับความช่วยเหลือ', 'success');
+                }, 2500);
+              } else {
+                alertBox.style.background = 'rgba(239,68,68,0.2)';
+                alertBox.style.border = '1px solid #ef4444';
+                alertBox.style.color = '#fca5a5';
+                alertBox.textContent = `❌ ${data.error || 'ไม่สามารถส่งไฟล์ได้ กรุณาลองใหม่อีกครั้ง'}`;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.innerHTML = '📤 ลองส่งใหม่อีกครั้ง';
+              }
+            };
+            reader.onerror = () => {
+              alertBox.style.background = 'rgba(239,68,68,0.2)';
+              alertBox.style.border = '1px solid #ef4444';
+              alertBox.style.color = '#fca5a5';
+              alertBox.textContent = 'เกิดข้อผิดพลาดในการอ่านไฟล์';
+              submitBtn.disabled = false;
+              submitBtn.style.opacity = '1';
+              submitBtn.innerHTML = '📤 ลองส่งใหม่อีกครั้ง';
+            };
+          } catch (err) {
+            alertBox.style.background = 'rgba(239,68,68,0.2)';
+            alertBox.style.border = '1px solid #ef4444';
+            alertBox.style.color = '#fca5a5';
+            alertBox.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.innerHTML = '📤 ลองส่งใหม่อีกครั้ง';
+          }
+        };
+      };
+
+      // Inline React Component for Admin Uploaded Exam Files management
+      window.AdminExamUploadsTab = function() {
+        const [uploads, setUploads] = window.React.useState([]);
+        const [loading, setLoading] = window.React.useState(false);
+        const [hasDriveToken, setHasDriveToken] = window.React.useState(false);
+        const [tokenInput, setTokenInput] = window.React.useState("");
+        const [savingToken, setSavingToken] = window.React.useState(false);
+        const [deletingId, setDeletingId] = window.React.useState(null);
+
+        const fetchUploads = async () => {
+          setLoading(true);
+          try {
+            const res = await fetch("/api/admin/exam-uploads");
+            const data = await res.json();
+            if (data.success) {
+              setUploads(data.uploads || []);
+              setHasDriveToken(!!data.hasAdminDriveToken);
+            }
+          } catch (e) {
+            console.error(e);
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        window.React.useEffect(() => {
+          fetchUploads();
+        }, []);
+
+        const handleSaveToken = async () => {
+          setSavingToken(true);
+          try {
+            const res = await fetch("/api/admin/save-google-drive-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ accessToken: tokenInput.trim() })
+            });
+            const data = await res.json();
+            if (data.success) {
+              setHasDriveToken(data.hasAdminDriveToken);
+              setTokenInput("");
+              window.showFaqNotification("บันทึก Google Drive OAuth Token เรียบร้อยแล้ว", "success");
+            }
+          } catch (e) {
+            window.showFaqNotification("เกิดข้อผิดพลาดในการบันทึก Token", "error");
+          } finally {
+            setSavingToken(false);
+          }
+        };
+
+        const handleDeleteUpload = async (id) => {
+          try {
+            const res = await fetch("/api/admin/exam-uploads/" + encodeURIComponent(id), { method: "DELETE" });
+            const data = await res.json();
+            if (data.success) {
+              setUploads(data.uploads || []);
+              window.showFaqNotification("ลบไฟล์ข้อสอบเรียบร้อยแล้ว", "success");
+            }
+          } catch (e) {
+            window.showFaqNotification("เกิดข้อผิดพลาดในการลบไฟล์", "error");
+          } finally {
+            setDeletingId(null);
+          }
+        };
+
+        const formatBytes = (bytes) => {
+          if (!bytes) return "0 Bytes";
+          const k = 1024;
+          const sizes = ["Bytes", "KB", "MB", "GB"];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+        };
+
+        return window.React.createElement("div", { className: "space-y-6 w-full flex flex-col min-w-0" },
+          window.React.createElement("div", { className: "bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-xl space-y-6 w-full min-w-0" },
+            // Header
+            window.React.createElement("div", { className: "flex items-center justify-between border-b border-stone-800 pb-4" },
+              window.React.createElement("div", { className: "flex items-center gap-3 text-left" },
+                window.React.createElement("div", { className: "w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-400 font-bold text-lg" }, "📤"),
+                window.React.createElement("div", null,
+                  window.React.createElement("h3", { className: "text-base font-bold text-white" }, "รายการไฟล์ข้อสอบที่ผู้ใช้ส่งมา (Exam Uploads & Google Drive)"),
+                  window.React.createElement("p", { className: "text-stone-400 text-xs mt-0.5" }, "ดูรายการไฟล์ ดาวน์โหลด หรือตั้งค่าการเชื่อมต่อ Google Drive")
+                )
+              ),
+              window.React.createElement("button", {
+                onClick: fetchUploads,
+                className: "px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+              }, "🔄 รีเฟรช")
+            ),
+
+            // Drive status card
+            window.React.createElement("div", { className: "bg-stone-950 border border-stone-800 rounded-xl p-4 text-left space-y-3" },
+              window.React.createElement("div", { className: "flex items-center justify-between" },
+                window.React.createElement("div", { className: "flex items-center gap-2" },
+                  window.React.createElement("span", { className: "text-sm font-bold text-stone-200" }, "สถานะการเชื่อมต่อ Google Drive:"),
+                  hasDriveToken ?
+                    window.React.createElement("span", { className: "px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[11px] font-bold" }, "🟢 พร้อมส่งไฟล์เข้า Google Drive อัตโนมัติ") :
+                    window.React.createElement("span", { className: "px-2.5 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[11px] font-bold" }, "🟡 บันทึกไฟล์ในเซิร์ฟเวอร์ (ยังไม่มี Drive Token)")
+                )
+              ),
+              window.React.createElement("div", { className: "space-y-2 pt-1 border-t border-stone-900" },
+                window.React.createElement("label", { className: "text-xs text-stone-400" }, "อัปเดต / ใส่ Google Drive OAuth Access Token (เพื่ออัปโหลดเข้า Drive โดยตรง):"),
+                window.React.createElement("div", { className: "flex gap-2" },
+                  window.React.createElement("input", {
+                    type: "password",
+                    value: tokenInput,
+                    onChange: (e) => setTokenInput(e.target.value),
+                    placeholder: hasDriveToken ? "•••••••••••••••• (มี Token ในระบบแล้ว วางเพื่อเปลี่ยน)" : "วาง Google OAuth Access Token ของคุณที่นี่...",
+                    className: "flex-1 p-2 bg-stone-900 border border-stone-800 rounded-lg text-xs text-stone-200 placeholder-stone-600 focus:outline-none focus:border-emerald-500/50"
+                  }),
+                  window.React.createElement("button", {
+                    onClick: handleSaveToken,
+                    disabled: savingToken || !tokenInput.trim(),
+                    className: "px-3 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                  }, savingToken ? "บันทึก..." : "💾 บันทึก Token"),
+                  hasDriveToken && window.React.createElement("button", {
+                    onClick: () => { setTokenInput(""); handleSaveToken(); },
+                    className: "px-3 py-2 bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-900/40 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                  }, "ลบ Token")
+                )
+              )
+            ),
+
+            // Uploaded List
+            window.React.createElement("div", { className: "space-y-3 text-left" },
+              window.React.createElement("h4", { className: "text-xs font-bold text-stone-300 flex items-center gap-1.5" },
+                "📋 รายการไฟล์ข้อสอบทั้งหมด (", uploads.length, " รายการ)"
+              ),
+              loading ? window.React.createElement("div", { className: "text-center text-xs text-stone-500 py-8" }, "กำลังโหลดรายการไฟล์...") :
+              uploads.length === 0 ? window.React.createElement("div", { className: "text-center text-xs text-stone-500 py-8 border border-dashed border-stone-800 rounded-xl" }, "ยังไม่มีใครส่งไฟล์ข้อสอบเข้ามาในขณะนี้") :
+              window.React.createElement("div", { className: "space-y-3" },
+                uploads.map((item, u_idx) =>
+                  window.React.createElement("div", { key: item.id || ("upload_" + u_idx), className: "bg-stone-950 border border-stone-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3" },
+                    window.React.createElement("div", { className: "flex-1 min-w-0" },
+                      window.React.createElement("div", { className: "flex items-center gap-2" },
+                        window.React.createElement("span", { className: "text-xs font-bold text-emerald-400 truncate" }, "📁 " + item.fileName),
+                        window.React.createElement("span", { className: "text-[10px] text-stone-400 bg-stone-900 px-2 py-0.5 rounded border border-stone-800" }, formatBytes(item.fileSize))
+                      ),
+                      window.React.createElement("div", { className: "text-xs text-stone-300 mt-1" },
+                        "👤 ผู้ส่ง: ", window.React.createElement("strong", { className: "text-stone-100" }, item.senderName || "ไม่ระบุชื่อ"),
+                        item.note ? (" | 📝 หมายเหตุ: " + item.note) : ""
+                      ),
+                      window.React.createElement("div", { className: "flex items-center gap-3 text-[10.5px] text-stone-500 mt-1.5" },
+                        window.React.createElement("span", null, "📅 " + new Date(item.uploadedAt).toLocaleString("th-TH")),
+                        window.React.createElement("span", { className: "font-semibold " + (item.driveFileId ? "text-emerald-400" : "text-amber-400") },
+                          item.driveFileId ? "☁️ บันทึกลง Google Drive แล้ว" : ("💾 " + item.driveStatus)
+                        )
+                      )
+                    ),
+                    window.React.createElement("div", { className: "flex items-center gap-2 shrink-0" },
+                      item.driveWebViewLink && window.React.createElement("a", {
+                        href: item.driveWebViewLink,
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        className: "px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1"
+                      }, "☁️ ดูบน Drive"),
+                      window.React.createElement("a", {
+                        href: "/api/exam-uploads/download/" + encodeURIComponent(item.id),
+                        target: "_blank",
+                        className: "px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1"
+                      }, "📥 ดาวน์โหลด"),
+                      deletingId === item.id ?
+                        window.React.createElement("div", { className: "flex gap-1 bg-stone-900 p-1 rounded-lg border border-rose-500/40" },
+                          window.React.createElement("button", {
+                            onClick: () => handleDeleteUpload(item.id),
+                            className: "px-2 py-1 bg-rose-600 text-white rounded text-[10px] font-bold cursor-pointer"
+                          }, "ลบเลย"),
+                          window.React.createElement("button", {
+                            onClick: () => setDeletingId(null),
+                            className: "px-2 py-1 bg-stone-800 text-stone-300 rounded text-[10px] cursor-pointer"
+                          }, "ยกเลิก")
+                        ) :
+                        window.React.createElement("button", {
+                          onClick: () => setDeletingId(item.id),
+                          className: "px-2.5 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-900/40 rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+                        }, "🗑️ ลบ")
+                    )
+                  )
+                )
+              )
+            )
+          )
+        );
+      };
+
+      setInterval(() => {
+        // Strict guard: if we are on any Admin screen/login, forcefully remove all injected FAQ buttons and exit!
+        const bodyText = document.body.textContent || '';
+        const currentUrl = window.location.href || '';
+        const currentHash = window.location.hash || '';
+        const isAdmin = currentUrl.includes('/admin') || 
+                        currentHash.includes('admin') || 
+                        bodyText.includes('ศูนย์ควบคุมผู้ดูแลระบบ') ||
+                        bodyText.includes('จัดการคำถามที่พบบ่อย (FAQ)') ||
+                        bodyText.includes('จัดการข้อสอบสภาการแพทย์') ||
+                        bodyText.includes('เข้าสู่ระบบสำหรับผู้ดูแลระบบเท่านั้น');
+
+        if (isAdmin) {
+          // Remove any injected user-side buttons immediately if present on Admin screens
+          const badButtons = document.querySelectorAll('#logged-out-faq-btn, .mt-faq-unique-btn, #admin-faq-mgmt-btn');
+          badButtons.forEach(b => b.remove());
+
+          return; // Stop processing further injections for users
+        }
+
+        // --- REGULAR USER SIDE INJECTIONS ---
+        const faqBtns = document.querySelectorAll('.mt-faq-unique-btn');
+        if (faqBtns.length > 2) {
+          for (let i = 2; i < faqBtns.length; i++) {
+            faqBtns[i].remove();
+          }
+        }
+
+        // 1. Logged-in FAQ button (next to Change Password)
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+          if ((btn.textContent.includes('เปลี่ยนรหัสผ่าน') || btn.textContent.includes('เปลี่ยนรหัส')) && !btn.dataset.faqInjected) {
+            if (btn.parentNode && !btn.parentNode.querySelector('.mt-faq-unique-btn')) {
+              btn.dataset.faqInjected = 'true';
+              const faqBtn = document.createElement('button');
+              faqBtn.className = btn.className + ' mt-faq-unique-btn';
+              faqBtn.style.cssText = btn.style.cssText;
+              faqBtn.innerHTML = '<svg style="width:16px;height:16px;display:inline;margin-right:6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>คำถามที่พบบ่อย';
+              faqBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); window.openFAQModal(); };
+              try {
+                btn.parentNode.insertBefore(faqBtn, btn.nextSibling);
+              } catch (err) {}
+            }
+          }
+        });
+      }, 500);
+    </script>
+    <script type="module" crossorigin src="/assets/index-BezkRbwM.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CBlwqB82.css">
+  </head>
+  <body class="bg-stone-950 text-stone-100 antialiased min-h-screen">
+    <div id="root"></div>
+  </body>
+</html>

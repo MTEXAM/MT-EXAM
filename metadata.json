@@ -1,0 +1,6 @@
+{
+  "name": "MT EXAM BOT",
+  "description": "ระบบคลังข้อสอบเทคนิคการแพทย์คลาวด์กลาง (ระบบใหม่)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

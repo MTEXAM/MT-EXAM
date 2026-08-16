@@ -1,0 +1,960 @@
+{
+  "questions": [
+    {
+      "id": "q_1786709778779_pnz8n",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ตามข้อบังคับสภาเทคนิคการแพทย์หัตถการในข้อใดที่นักเทคนิคการแพทย์สามารถกระทำได้ แต่ต้องมีผู้\nประกอบวิชาชีพเวชกรรมอยู่ด้วย",
+      "options": [
+        "การเจาะเก็บตัวอย่างจากหลอดเลือดแดง",
+        "การเจาะเก็บโลหิตจากผู้บริจาคโลหิต",
+        "การเก็บสิ่งส่งตรวจโดยการป้ายหนองจากแผลบริเวณผิวหนัง",
+        "EEG",
+        "EKG"
+      ],
+      "correctAnswer": 1,
+      "createdAt": "2026-08-14T12:16:18.779Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786709955352_7q5ha",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ใครเป็นผู้อนุญาติสถานพยาบาลตาม พรบ ปี 2541",
+      "options": [
+        "รัฐมนตรีว่าการกระทรวงสาธารณะสุข",
+        "อธิบดีกรมการแพทย์",
+        "อธิบดีกรมสนับสนุนบริการสุขภาพ",
+        "ปลัดกระทรงสาธารณสุข",
+        "คณะกรรมการสถานพยาบาล"
+      ],
+      "correctAnswer": 2,
+      "createdAt": "2026-08-14T12:19:15.352Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786710129648_1sc3y",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ข้อใดไม่จัดเป็นเครื่องมือแพทย์ ตามพระราชบัญญัติเครื่องมือแพทย์ ปี 2551",
+      "options": [
+        "คอนแทคเลนส์",
+        "สารเสพติดแอมเฟตามีนในร่างกายมนุษย์",
+        "เครื่องวัดความดันโลหิต",
+        "ชุดตรวจครรภ์",
+        "น้ำยาฆ่าเชื้อ(ล้างมือ)"
+      ],
+      "correctAnswer": 4,
+      "createdAt": "2026-08-14T12:22:09.648Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786710263483_2cj6z",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ตามพระราชบัญญัติวิชาชีพเทคนิคการแพทย์ พ.ศ.2547 กำหนดจำนวนกรรมการสภาเทคนิคการแพทย์ที่มา\nจากการเลือกตั้ง และจำนวนกรรมการรวมทั้งหมดกี่คน",
+      "options": [
+        "จำนวน 9 คน และ 21 คน",
+        "จำนวน 12 คน และ 24 คน",
+        "จำนวน 15 คน และ 30 คน",
+        "จำนวน 18 คน และ 36 คน",
+        "จำนวน 20 คน และ 41 คน"
+      ],
+      "correctAnswer": 1,
+      "createdAt": "2026-08-14T12:24:23.483Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786710337675_z0scw",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "คลินิกเทคนิคการแพทย์ตามกฎหมายกำหนดต้องมีนักเทคนิคการแพทย์อย่างน้อยกี่คน",
+      "options": [
+        "1 คน",
+        "2 คน",
+        "3 คน",
+        "4 คน",
+        "5 คน"
+      ],
+      "correctAnswer": 0,
+      "createdAt": "2026-08-14T12:25:37.675Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711116609_49jrz",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ข้อใดคือผู้รับผิดชอบในการจัดหาให้มีผู้ประกอบวิชาชีพ ตามสาขาและจำนวนตามกฎกระทรวง",
+      "options": [
+        "ผู้จัดการสถานพยาบาล",
+        "ผู้อำนวยการสถานพยาบาล",
+        "ผู้ดำเนินการ",
+        "ผู้รับอนุญาต",
+        "ผู้รับอนุญาตและผู้ดำเนินการ"
+      ],
+      "correctAnswer": 4,
+      "createdAt": "2026-08-14T12:38:36.609Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711205293_4sjq8",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ประกอบวิชาชีพเทคนิคการแพทย์โดยไม่มีใบอนุญาตจะมีความผิดต้องระวางโทษอย่างไร",
+      "options": [
+        "โทษจำคุกไม่เกิน 1 ปีหรือปรับไม่เกิน 10,000 บาทหรือทั้งจำทั้งปรับ",
+        "โทษจำคุกไม่เกิน 1 ปีหรือปรับไม่เกิน 20,000 บาทหรือทั้งจำทั้งปรับ",
+        "โทษจำคุกไม่เกิน 2 ปีหรือปรับไม่เกิน 40,000 บาทหรือทั้งจำทั้งปรับ",
+        "โทษจำคุกไม่เกิน 3 ปีหรือปรับไม่เกิน 60,000 บาทหรือทั้งจำทั้งปรับ",
+        "โทษจำคุกไม่เกิน 5 ปีหรือปรับไม่เกิน 100,000 บาทหรือทั้งจำทั้งปรับ"
+      ],
+      "correctAnswer": 3,
+      "createdAt": "2026-08-14T12:40:05.293Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711297604_bupmt",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ข้อใดที่มติคณะเทคนิคการแพทย์ต้องได้รับความเห็นชอบจากสภานายกพิเศษ",
+      "options": [
+        "ยกข้อกล่าวหา",
+        "ยกข้อกล่าวโทษ",
+        "ว่ากล่าวตักเตือน",
+        "ภาคทัณฑ์",
+        "พักใช้ใบอนุญาต"
+      ],
+      "correctAnswer": 4,
+      "createdAt": "2026-08-14T12:41:37.604Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711474860_61jkn",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "ในการที่มีผู้ร้องเรียนกล่าวหาหรือกล่าวโทษนักเทคนิคการแพทย์เลขาธิการจะส่งข้อร้องกล่าวหาหรือ\nกล่าวโทษให้ใครต่อ",
+      "options": [
+        "นายกสภาเทคนิคการแพทย์",
+        "สภาเทคนิคการแพทย์",
+        "ประธานกรรมการรับร้องเรียน",
+        "ประธานอนุกรรมการจรรยาบรรณ",
+        "ประธานอนุกรรมการสอบสวน"
+      ],
+      "correctAnswer": 3,
+      "createdAt": "2026-08-14T12:44:34.860Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711619945_lj9oq",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "บุคคลใดต่อไปนี้ดำรงตำแหน่งประธานคณะกรรมการสถานพยาบาล",
+      "options": [
+        "บุคคลใดต่อไปนี้ดำรงตำแหน่งประธานคณะกรรมการสถานพยาบาล",
+        "นายกรัฐมนตรี",
+        "รัฐมนตรีกระทรวงสาธารณะสุข",
+        "ปลัดกระทรวงสาธารณะสุข",
+        "ผู้อำนวยการสำนักพยาบาลและการประกอบโรคศิลป์"
+      ],
+      "correctAnswer": 3,
+      "createdAt": "2026-08-14T12:46:59.945Z",
+      "createdBy": "bank",
+      "status": "approved"
+    },
+    {
+      "id": "q_1786711685592_ea9cp",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "question": "กรรมการสภาเทคนิคการแพทย์ตำแหน่งใด มีหน้าที่ดูแลทะเทียน",
+      "options": [
+        "นายกสภาเทคนิคการแพทย์",
+        "ผู้ที่นายกสภาเทคนิคการแพทย์มอบหมาย",
+        "อุปนายกสภาเทคนิคการแพทย์",
+        "เลขาธิการสภาเทคนิคการแพทย์",
+        "นายทะเบียนสภาเทคนิคการแพทย์"
+      ],
+      "correctAnswer": 3,
+      "createdAt": "2026-08-14T12:48:05.592Z",
+      "createdBy": "bank",
+      "status": "approved"
+    }
+  ],
+  "comments": [],
+  "users": [
+    {
+      "username": "bank.sahapun@gmail.com",
+      "role": "admin",
+      "displayName": "Admin ร่วม",
+      "createdAt": "2026-08-15T07:56:53.042Z",
+      "lastLoginAt": "2026-08-15T09:34:47.340Z",
+      "optOutLeaderboard": false,
+      "userCategory": "medtech"
+    },
+    {
+      "username": "bank",
+      "role": "admin",
+      "createdAt": "2026-08-12T14:51:46.070Z",
+      "lastLoginAt": "2026-08-15T09:43:39.635Z",
+      "optOutLeaderboard": false,
+      "displayName": "Admin",
+      "userCategory": "medtech",
+      "mustChangePassword": false
+    },
+    {
+      "username": "Bank22222",
+      "displayName": "Bank22222",
+      "role": "user",
+      "createdAt": "2026-08-15T07:59:20.145Z",
+      "lastLoginAt": "2026-08-15T09:43:57.861Z",
+      "userCategory": "medtech",
+      "optOutLeaderboard": false
+    },
+    {
+      "username": "BBBBb111",
+      "displayName": "BBBBb111",
+      "role": "user",
+      "createdAt": "2026-08-15T08:02:06.313Z",
+      "lastLoginAt": "2026-08-15T08:02:06.313Z",
+      "userCategory": "medtech",
+      "optOutLeaderboard": false
+    },
+    {
+      "username": "Bank2546",
+      "displayName": "Bank2546",
+      "role": "user",
+      "createdAt": "2026-08-15T08:03:56.171Z",
+      "lastLoginAt": "2026-08-15T09:24:37.674Z",
+      "userCategory": "medtech",
+      "optOutLeaderboard": false
+    },
+    {
+      "username": "Bbbbbb11",
+      "displayName": "Bbbbbb11",
+      "role": "user",
+      "createdAt": "2026-08-15T09:26:33.166Z",
+      "lastLoginAt": "2026-08-15T09:32:33.851Z",
+      "userCategory": "exam_prep",
+      "optOutLeaderboard": false
+    },
+    {
+      "username": "testuser1669",
+      "displayName": "Tester",
+      "role": "user",
+      "createdAt": "2026-08-15T09:31:33.395Z",
+      "lastLoginAt": "2026-08-15T09:31:33.414Z",
+      "userCategory": "student",
+      "studentYear": "ปี 1",
+      "optOutLeaderboard": false
+    }
+  ],
+  "scores": [
+    {
+      "id": "sc_1786767583935",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 1,
+      "totalCorrect": 0,
+      "percentage": 0,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_1786709955352_7q5ha"
+      ],
+      "timestamp": "2026-08-15T04:19:43.935Z"
+    },
+    {
+      "id": "sc_1786767572637",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 11,
+      "totalCorrect": 10,
+      "percentage": 90.91,
+      "passed": true,
+      "incorrectQuestionIds": [
+        "q_1786709955352_7q5ha"
+      ],
+      "timestamp": "2026-08-15T04:19:32.637Z"
+    },
+    {
+      "id": "sc_1786767490750",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 4,
+      "totalCorrect": 4,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-15T04:18:10.750Z"
+    },
+    {
+      "id": "sc_1786767027701",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 4,
+      "totalCorrect": 3,
+      "percentage": 75,
+      "passed": true,
+      "incorrectQuestionIds": [
+        "q_1786711297604_bupmt"
+      ],
+      "timestamp": "2026-08-15T04:10:27.701Z"
+    },
+    {
+      "id": "sc_1786766668144",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 3,
+      "totalCorrect": 3,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-15T04:04:28.144Z"
+    },
+    {
+      "id": "sc_1786765575166",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 2,
+      "totalCorrect": 2,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-15T03:46:15.166Z"
+    },
+    {
+      "id": "sc_1786765556473",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 1,
+      "totalCorrect": 1,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-15T03:45:56.473Z"
+    },
+    {
+      "id": "sc_1786765086774",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 11,
+      "totalCorrect": 11,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-15T03:38:06.774Z"
+    },
+    {
+      "id": "sc_1786714987342",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 1,
+      "totalCorrect": 1,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-14T13:43:07.342Z"
+    },
+    {
+      "id": "sc_1786714963178",
+      "username": "bank",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "totalAttempted": 1,
+      "totalCorrect": 1,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-14T13:42:43.178Z"
+    },
+    {
+      "id": "sc_1786714931751",
+      "username": "bank",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "totalAttempted": 11,
+      "totalCorrect": 11,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-14T13:42:11.751Z"
+    },
+    {
+      "id": "sc_1786711042994",
+      "username": "bank",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "totalAttempted": 3,
+      "totalCorrect": 1,
+      "percentage": 33.33,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_1786709955352_7q5ha",
+        "q_1786710129648_1sc3y"
+      ],
+      "timestamp": "2026-08-14T12:37:22.994Z"
+    },
+    {
+      "id": "sc_1786692388013",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 3,
+      "totalCorrect": 0,
+      "percentage": 0,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_2",
+        "q_sample_2",
+        "q_sample_6"
+      ],
+      "timestamp": "2026-08-14T07:26:28.013Z"
+    },
+    {
+      "id": "sc_1786634608941",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 1,
+      "totalCorrect": 0,
+      "percentage": 0,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_2"
+      ],
+      "timestamp": "2026-08-13T15:23:28.941Z"
+    },
+    {
+      "id": "sc_1786634102782",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 2,
+      "totalCorrect": 1,
+      "percentage": 50,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_3"
+      ],
+      "timestamp": "2026-08-13T15:15:02.782Z"
+    },
+    {
+      "id": "sc_1786633558894",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 2,
+      "totalCorrect": 1,
+      "percentage": 50,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_2"
+      ],
+      "timestamp": "2026-08-13T15:05:58.894Z"
+    },
+    {
+      "id": "sc_1786616916591",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 1,
+      "totalCorrect": 0,
+      "percentage": 0,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_2"
+      ],
+      "timestamp": "2026-08-13T10:28:36.591Z"
+    },
+    {
+      "id": "sc_1786616897054",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 2,
+      "totalCorrect": 0,
+      "percentage": 0,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_2",
+        "q_sample_3"
+      ],
+      "timestamp": "2026-08-13T10:28:17.054Z"
+    },
+    {
+      "id": "sc_1786598851457",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 2,
+      "totalCorrect": 2,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-13T05:27:31.457Z"
+    },
+    {
+      "id": "sc_1786598797610",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคบ่าย (Mock Exam)",
+      "totalAttempted": 4,
+      "totalCorrect": 4,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-13T05:26:37.610Z"
+    },
+    {
+      "id": "sc_1786598713537",
+      "username": "bank",
+      "subject": "สอบเสมือนจริงภาคเช้า (Mock Exam)",
+      "totalAttempted": 2,
+      "totalCorrect": 2,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-13T05:25:13.537Z"
+    },
+    {
+      "id": "sc_1786561872690",
+      "username": "bank",
+      "subject": "วิชาจุลทรรศน์ศาสตร์และปรสิตวิทยา",
+      "totalAttempted": 25,
+      "totalCorrect": 19,
+      "percentage": 76,
+      "passed": true,
+      "incorrectQuestionIds": [
+        "q_aft_66_pbvp",
+        "q_aft_65_cif6",
+        "q_aft_72_jldr",
+        "q_aft_57_mobv",
+        "q_aft_59_p454",
+        "q_aft_63_tw4n"
+      ],
+      "timestamp": "2026-08-12T19:11:12.690Z"
+    },
+    {
+      "id": "sc_1786561180607",
+      "username": "bank",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 1,
+      "totalCorrect": 1,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-12T18:59:40.607Z"
+    },
+    {
+      "id": "sc_1786560469280",
+      "username": "bank",
+      "subject": "วิชาเคมีคลินิก",
+      "totalAttempted": 2,
+      "totalCorrect": 2,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-12T18:47:49.280Z"
+    },
+    {
+      "id": "sc_1786559391110",
+      "username": "bank",
+      "subject": "วิชาโลหิตวิทยา",
+      "totalAttempted": 30,
+      "totalCorrect": 18,
+      "percentage": 60,
+      "passed": true,
+      "incorrectQuestionIds": [
+        "q_aft_88_ktbl",
+        "q_aft_112_snx0",
+        "q_aft_117_6mae",
+        "q_aft_115_dm9a",
+        "q_aft_87_rs10",
+        "q_aft_76_0h2r",
+        "q_aft_82_55u5",
+        "q_aft_94_7j52",
+        "q_aft_102_xzgw",
+        "q_aft_97_bl65",
+        "q_aft_107_mp7n",
+        "q_aft_113_aepq"
+      ],
+      "timestamp": "2026-08-12T18:29:51.110Z"
+    },
+    {
+      "id": "sc_1786558226318",
+      "username": "bank",
+      "subject": "วิชากฎหมายและมาตรฐานวิชาชีพ",
+      "totalAttempted": 2,
+      "totalCorrect": 2,
+      "percentage": 100,
+      "passed": true,
+      "incorrectQuestionIds": [],
+      "timestamp": "2026-08-12T18:10:26.318Z"
+    },
+    {
+      "id": "sc_1786555049980",
+      "username": "bank2",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 7,
+      "totalCorrect": 3,
+      "percentage": 42.86,
+      "passed": false,
+      "incorrectQuestionIds": [
+        "q_sample_1",
+        "q_sample_4",
+        "q_sample_3",
+        "q_sample_7"
+      ],
+      "timestamp": "2026-08-12T17:17:29.980Z"
+    },
+    {
+      "id": "sc_1786546739224",
+      "username": "Guest (e3f7)",
+      "subject": "สุ่มรวมทุกวิชา",
+      "totalAttempted": 3,
+      "totalCorrect": 2,
+      "percentage": 66.67,
+      "passed": true,
+      "timestamp": "2026-08-12T14:58:59.224Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif_1786561151873_j84a",
+      "targetUser": "SystemTestBot",
+      "commentId": "comm_1786561126797_32wo",
+      "questionId": "q_val_test_all",
+      "questionText": "โจทย์ทดสอบระบบทั้งหมด",
+      "commentText": "ทดสอบการส่งคอมเมนต์เรียลไทม์ในการทดสอบทั้งหมด",
+      "adminReply": ".",
+      "createdAt": "2026-08-12T18:59:11.873Z",
+      "read": false
+    }
+  ],
+  "publicComments": [
+    {
+      "id": "1786786788923",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] แอดมิน ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [QUF8JI] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:39:48.923Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "roomId": "QUF8JI",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    },
+    {
+      "id": "1786786723695",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] แอดมิน ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [QUF8JI] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:38:43.695Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "roomId": "QUF8JI",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    },
+    {
+      "id": "1786786719185",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "มาแข่งทดสอบความรู้เทคนิคการแพทย์กัน! คลิก: https://ais-dev-xiftsicrt4entwmmp6uygm-114914192301.asia-southeast1.run.app/?room=QUF8JI สมัครสมาชิกหรือเข้าสู่ระบบก่อนเริ่มแข่งกับเพื่อน",
+      "createdAt": "2026-08-15T09:38:39.185Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "isRoomInvite": false
+    },
+    {
+      "id": "1786786705207",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "gtt",
+      "createdAt": "2026-08-15T09:38:25.207Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "isRoomInvite": false
+    },
+    {
+      "id": "1786786701030",
+      "username": "bank",
+      "displayName": "แอดมิน",
+      "message": "gtt;hltht",
+      "createdAt": "2026-08-15T09:38:21.030Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank",
+        "bank.sahapun@gmail.com",
+        "Bank22222"
+      ],
+      "isRoomInvite": false
+    },
+    {
+      "id": "1786786690772",
+      "username": "bank",
+      "displayName": "แอดมิน",
+      "message": "gthofyh;lt",
+      "createdAt": "2026-08-15T09:38:10.772Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank",
+        "bank.sahapun@gmail.com",
+        "Bank22222"
+      ],
+      "isRoomInvite": false
+    },
+    {
+      "id": "1786786624363",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] แอดมิน ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [Z2TN73] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:37:04.363Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "roomId": "Z2TN73",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    },
+    {
+      "id": "1786786494371",
+      "username": "bank.sahapun@gmail.com",
+      "displayName": "แอดมิน",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] แอดมิน ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [Z2TN73] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:34:54.371Z",
+      "role": "admin",
+      "isAdmin": true,
+      "readBy": [
+        "bank.sahapun@gmail.com",
+        "bank",
+        "Bank22222"
+      ],
+      "roomId": "Z2TN73",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    },
+    {
+      "id": "1786786369171",
+      "username": "Bbbbbb11",
+      "displayName": "Bbbbbb11",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] Bbbbbb11 ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [4U5G0U] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:32:49.171Z",
+      "role": "user",
+      "isAdmin": false,
+      "readBy": [
+        "Bbbbbb11",
+        "bank",
+        "bank.sahapun@gmail.com",
+        "Bank22222"
+      ],
+      "roomId": "4U5G0U",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    },
+    {
+      "id": "1786785889637",
+      "username": "Bank2546",
+      "displayName": "Bank2546",
+      "message": "⚔️ [คำเชิญห้องแข่งขัน] Bank2546 ได้เปิดห้องแข่งขันในโหมดประลองปัญญา รหัสห้อง [2MCMFI] (วิชา: รวมทุกวิชา, จำนวน: 10 ข้อ) เชิญชวนผู้สนใจเข้าร่วมท้าประลองความรู้ร่วมกัน!",
+      "createdAt": "2026-08-15T09:24:49.637Z",
+      "role": "user",
+      "isAdmin": false,
+      "readBy": [
+        "Bank2546",
+        "bank",
+        "bank.sahapun@gmail.com",
+        "Bank22222"
+      ],
+      "roomId": "2MCMFI",
+      "roomSubject": "รวมทุกวิชา",
+      "roomQuestionCount": 10,
+      "isRoomInvite": true,
+      "roomStatus": "closed"
+    }
+  ],
+  "announcements": [],
+  "subjects": [
+    "วิชากฎหมายและมาตรฐานวิชาชีพ",
+    "วิชาเคมีคลินิก",
+    "วิชาจุลชีววิทยา",
+    "วิชาธนาคารโลหิต",
+    "วิชาภูมิคุ้มกันวิทยา",
+    "วิชาจุลทรรศน์ศาสตร์และปรสิตวิทยา",
+    "วิชาโลหิตวิทยา"
+  ],
+  "hiddenSubjects": [],
+  "subjectConfigs": {
+    "วิชาเคมีคลินิก": {
+      "morningCount": 50,
+      "afternoonCount": 0,
+      "morningOrder": 2,
+      "afternoonOrder": 2
+    },
+    "วิชาจุลชีววิทยา": {
+      "morningCount": 50,
+      "afternoonCount": 0,
+      "morningOrder": 3,
+      "afternoonOrder": 3
+    },
+    "วิชาธนาคารโลหิต": {
+      "morningCount": 0,
+      "afternoonCount": 25,
+      "morningOrder": 4,
+      "afternoonOrder": 1
+    },
+    "วิชาภูมิคุ้มกันวิทยา": {
+      "morningCount": 0,
+      "afternoonCount": 25,
+      "morningOrder": 5,
+      "afternoonOrder": 2
+    },
+    "วิชาจุลทรรศน์ศาสตร์และปรสิตวิทยา": {
+      "morningCount": 0,
+      "afternoonCount": 25,
+      "morningOrder": 6,
+      "afternoonOrder": 2
+    },
+    "วิชาโลหิตวิทยา": {
+      "morningCount": 0,
+      "afternoonCount": 50,
+      "morningOrder": 7,
+      "afternoonOrder": 3
+    },
+    "วิชากฎหมายและมาตรฐานวิชาชีพ": {
+      "morningCount": 30,
+      "afternoonCount": 0,
+      "morningOrder": 1,
+      "afternoonOrder": 1
+    }
+  },
+  "bannedWords": [
+    "ควย",
+    "เหี้ย",
+    "เย็ด",
+    "สัส",
+    "สัด",
+    "เหดียว",
+    "ดอกทอง",
+    "กวนส้นตีน",
+    "ส้นตีน",
+    "ชาติชั่ว",
+    "ระยำ",
+    "จัญไร",
+    "กู",
+    "มึง",
+    "หน้าตัวเมีย",
+    "อีสัตว์",
+    "ไอ้สัตว์",
+    "ห่า",
+    "พ่องตาย",
+    "แม่ง",
+    "แรด",
+    "ตอแหล",
+    "เงี่ยน",
+    "หี",
+    "แตด",
+    "หำ",
+    "ปี้",
+    "เสือก",
+    "กะหรี่",
+    "ไอ้เหี้ย",
+    "อีเหี้ย",
+    "ควาย",
+    "อีควาย",
+    "ไอ้ควาย",
+    "หน้าควาย",
+    "ชาติหมา",
+    "หัวดอ",
+    "กระดอ",
+    "ชิหาย",
+    "ฉิบหาย",
+    "ปัญญาอ่อน",
+    "ดักดาน",
+    "เสี้ยน",
+    "หน้าเหี้ย",
+    "อีดอก",
+    "ไอ้สัส",
+    "อีสัส",
+    "เชี่ย",
+    "ไอ้เชี่ย",
+    "อีเชี่ย",
+    "หน้าส้นตีน",
+    "หัวควย",
+    "เย็ดแม่",
+    "เย็ดเข้",
+    "fuck",
+    "fucker",
+    "fucking",
+    "shit",
+    "bitch",
+    "bastard",
+    "dick",
+    "pussy",
+    "asshole",
+    "cunt",
+    "cock",
+    "slut",
+    "whore",
+    "nigger",
+    "motherfucker"
+  ],
+  "systemWarning": "",
+  "landingConfig": {
+    "line1": "จัดทำโดย",
+    "line2": "เพจเล่าเรื่องจากห้องแล็บ"
+  },
+  "systemControl": {
+    "disableRegistration": false,
+    "registrationReason": "",
+    "disableLogin": false,
+    "loginReason": "Ooo",
+    "autoCloseLoginTime": null,
+    "autoOpenLoginTime": null
+  },
+  "generalSettings": {
+    "siteTitle": "MT EXAM THAILAND",
+    "maintenanceMode": false
+  },
+  "closedRooms": [
+    "D9BKYJ",
+    "ASSORR",
+    "XDTMRI",
+    "NOYWJU"
+  ],
+  "passwords": {
+    "bank": "Bank2546",
+    "admin": "Bank2546",
+    "bank.sahapun@gmail.com": "Bank2546",
+    "Bank22222": "Bank22222",
+    "bank22222": "Bank22222",
+    "BBBBb111": "BBBBb111",
+    "bbbbb111": "BBBBb111",
+    "Bank2546": "Bank2546",
+    "bank2546": "Bank2546",
+    "Bbbbbb11": "Bbbbbb11",
+    "bbbbbb11": "Bbbbbb11",
+    "testuser1669": "Password123"
+  }
+}
